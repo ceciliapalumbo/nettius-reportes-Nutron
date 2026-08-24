@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Consolidados del mes (salida de la capa 3)",
+  "type": "object",
+  "required": ["cliente", "mes", "comunidad_total", "alcance_total", "impresiones_totales", "nuevos_seguidores", "por_red", "top_contenido"],
+  "properties": {
+    "cliente": { "type": "string" },
+    "mes": { "type": "string", "pattern": "^\\d{4}-\\d{2}$" },
+    "comunidad_total": { "type": "integer", "description": "suma de seguidores/inscriptos de todas las redes" },
+    "alcance_total": { "type": "integer" },
+    "impresiones_totales": { "type": "integer" },
+    "nuevos_seguidores": {
+      "type": "object",
+      "required": ["organicos", "por_campana", "total"],
+      "properties": {
+        "organicos": { "type": "integer", "description": "carga manual desde Meta Business Suite" },
+        "por_campana": { "type": "integer", "description": "Meta Ads Insights" },
+        "total": { "type": "integer" }
+      }
+    },
+    "pct_crecimiento_nettius": { "type": "number", "description": "% del crecimiento impulsado por contenido Nettius" },
+    "por_red": {
+      "type": "object",
+      "description": "KPIs por red (cuenta completa, no filtrada)",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "seguidores": { "type": "integer" },
+          "alcance": { "type": "integer" },
+          "impresiones": { "type": "integer" },
+          "interacciones": { "type": "integer" },
+          "posts_nettius": { "type": "integer", "description": "cantidad de contenido de Nettius (filtrado)" }
+        }
+      }
+    },
+    "top_contenido": {
+      "type": "array",
+      "description": "top publicaciones de Nettius por interacciones (ya filtrado por propiedad)",
+      "items": {
+        "type": "object",
+        "required": ["titulo", "red", "link", "interacciones"],
+        "properties": {
+          "titulo": { "type": "string" },
+          "red": { "type": "string" },
+          "link": { "type": "string" },
+          "fecha": { "type": "string" },
+          "alcance": { "type": "integer" },
+          "interacciones": { "type": "integer" }
+        }
+      }
+    }
+  }
+}

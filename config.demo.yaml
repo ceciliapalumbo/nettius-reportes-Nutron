@@ -1,0 +1,46 @@
+cliente: nutron
+nombre_cliente: "Nutron Brasil (demo)"
+idioma_reporte: pt
+google_sheet:
+  mode: local
+  output_dir: output/demo
+  manual_values: {"2026-08": 42}
+  tabs:
+    ig_contenido: IG_Contenido_Nettius
+    li_contenido: LinkedIn_Contenido_Nettius
+    youtube: YouTube_Nettius
+    meta_ads: MetaAds_Campanhas
+    consolidados: Consolidados
+    analisis: Analise_Texto
+    dato_manual: Manual_Meta
+metricool:
+  exports:
+    instagram_posts:
+      inline_rows:
+        - {URL: "https://instagram.com/p/nettius01/?utm_source=x", Fecha: "05/08/2026", Texto: "Saúde intestinal", Alcance: "1.250", Impresiones: "1.800", Interacciones: 140}
+        - {URL: "https://instagram.com/p/otra-agencia", Fecha: "05/08/2026", Texto: "Contenido externo", Alcance: 900, Impresiones: 1200, Interacciones: 80}
+    linkedin_posts:
+      inline_rows:
+        - {URL: "https://www.linkedin.com/feed/update/urn:li:activity:123", Fecha: "2026-08-12", Texto: "Resultados técnicos", Alcance: 700, Impresiones: 950, Interacciones: 55}
+    account_kpis:
+      inline_rows:
+        - {Red: Instagram, Seguidores: 10000, Alcance: 50000, Impresiones: 75000, Interacciones: 3200}
+        - {Red: LinkedIn, Seguidores: 4000, Alcance: 12000, Impresiones: 18000, Interacciones: 600}
+        - {Red: YouTube, Seguidores: 2000, Alcance: 0, Impresiones: 0, Interacciones: 120}
+    youtube:
+      inline_rows:
+        - {URL: "https://youtube.com/watch?v=abc123&utm_source=x", Título: "Nutrição de precisão", Fecha: "2026-08-20", Visualizaciones: 2100, Tipo: video, "Duración (s)": 480, Miniatura: "https://example.com/a.jpg"}
+    meta_ads:
+      inline_rows:
+        - {Campaña: Seguidores agosto, Seguidores: 18}
+monday:
+  board_id: "18404527148"
+  clave_cruce: link
+  inline_rows:
+    - {id: "m1", link: "https://instagram.com/p/nettius01", fecha: "2026-08-05", red: instagram}
+    - {id: "m2", link: "https://linkedin.com/feed/update/urn:li:activity:123/", fecha: "2026-08-12", red: linkedin}
+    - {id: "m3", link: "https://youtu.be/abc123", fecha: "2026-08-20", red: youtube}
+youtube: {fuente: metricool, short_max_segundos: 60}
+meta_ads: {fuente: metricool}
+narrativa: {proveedor: demo, modelo: demo, max_tokens: 900}
+notificar: {email: "", slack_webhook: ""}

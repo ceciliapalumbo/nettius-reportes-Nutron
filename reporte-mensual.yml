@@ -1,0 +1,48 @@
+name: Reporte mensual Nettius
+
+on:
+  schedule:
+    - cron: "0 9 1 * *"
+  workflow_dispatch:
+    inputs:
+      cliente:
+        description: "Cliente configurado"
+        required: true
+        default: "nutron"
+        type: string
+      mes:
+        description: "Mes YYYY-MM (vacío = mes anterior)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reporte-mensual-${{ github.event.inputs.cliente || 'nutron' }}
+  cancel-in-progress: false
+
+jobs:
+  reporte:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      MONDAY_TOKEN: ${{ secrets.MONDAY_TOKEN }}
+      GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Ejecutar reporte
+        env:
+          INPUT_CLIENTE: ${{ github.event.inputs.cliente }}
+          INPUT_MES: ${{ github.event.inputs.mes }}
+        run: |
+          CLIENTE="${INPUT_CLIENTE:-nutron}"
+          MES="${INPUT_MES:-$(date -u -d 'last month' +%Y-%m)}"
+          python -m src.run_month --cliente "$CLIENTE" --mes "$MES"
