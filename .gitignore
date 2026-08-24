@@ -1,0 +1,8 @@
+.env
+config.yaml
+!config.example.yaml
+!examples/config.demo.yaml
+output/
+__pycache__/
+.pytest_cache/
+*.py[cod]

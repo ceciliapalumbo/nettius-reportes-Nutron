@@ -1,0 +1,95 @@
+# Copiá este archivo a config.yaml (uno por cliente) y completá.
+# Las CREDENCIALES sensibles NO van acá: van en .env (ver abajo). Acá solo IDs y parámetros.
+
+cliente: nutron            # id corto; define el nombre de la Sheet y del reporte
+nombre_cliente: "Nutron Brasil"
+idioma_reporte: pt         # pt | es  (idioma de la narrativa)
+
+# --- Google Sheet de trabajo que Looker lee en vivo ---
+google_sheet:
+  spreadsheet_id: "TODO_ID_DE_LA_SHEET"      # la Sheet que el reporte de Looker consume
+  # nombres de pestañas que escribe el pipeline (Looker apunta a estas)
+  tabs:
+    ig_contenido: "IG_Contenido_Nettius"
+    li_contenido: "LinkedIn_Contenido_Nettius"
+    youtube: "YouTube_Nettius"
+    meta_ads: "MetaAds_Campanhas"
+    consolidados: "Consolidados"
+    analisis: "Analise_Texto"
+    dato_manual: "Manual_Meta"               # pestaña con la celda de orgánicos
+
+# --- Metricool (plan SIN API -> se leen los exports CSV cargados en Google Sheets) ---
+metricool:
+  tiene_api: false
+  # Cada 'kind' apunta a un export de Metricool ya cargado en una Sheet.
+  # NEEDS_INPUT: confirmar ids/pestañas reales y el nombre de cada columna del export.
+  exports:
+    instagram_posts:
+      spreadsheet_id: "TODO_ID"
+      worksheet: "instagram-posts_{desde}_{hasta}_contenidos"
+      columns: { link: "URL", fecha: "Fecha", titulo: "Texto", alcance: "Alcance", impresiones: "Impresiones", interacciones: "Interacciones" }
+    linkedin_posts:
+      spreadsheet_id: "TODO_ID"
+      worksheet: "{mes}"
+      columns: { link: "URL", fecha: "Fecha", titulo: "Texto", alcance: "Alcance", impresiones: "Impresiones", interacciones: "Interacciones" }
+    account_kpis:
+      spreadsheet_id: "TODO_ID"
+      worksheet: "{mes}"
+      columns: { red: "Red", seguidores: "Seguidores", alcance: "Alcance", impresiones: "Impresiones", interacciones: "Interacciones" }
+      aggregation: { seguidores: "last", alcance: "sum", impresiones: "sum", interacciones: "sum" }
+    youtube:
+      spreadsheet_id: "TODO_ID"
+      worksheet: "Métricas TY Nutron - {mes}"
+      columns: { link: "URL", titulo: "Título", fecha: "Fecha", visualizaciones: "Visualizaciones", tipo: "Tipo", duracion_segundos: "Duración (s)", portada: "Miniatura" }
+    meta_ads:
+      spreadsheet_id: "TODO_ID"
+      worksheet: "{mes}"
+      columns: { campana: "Campaña", seguidores: "Seguidores" }
+  # Nota: las páginas de canal en Looker ya se refrescan solas por el conector de Metricool;
+  # estos exports son solo para que el script pueda hacer el join de propiedad y los consolidados.
+
+# --- Monday (fuente de la verdad de propiedad) ---
+monday:
+  board_id: "18404527148"        # board "Cliente NUTRON"
+  subitem_prefix: "Publicar"
+  ownership_networks: [instagram, linkedin, youtube]
+  # "auto" descubre los IDs por el título de las columnas del board de subitems.
+  columnas:
+    link: "auto"
+    fecha: "auto"
+  # clave de cruce: 'link' (preferido) o 'fecha_red' (fallback si no hay link/ID)
+  clave_cruce: "link"
+
+# --- YouTube ---
+# Por defecto los datos de YouTube salen de Metricool (fuente: metricool).
+# Solo completar channel_id/API si se usa el fallback fuente: youtube_api.
+youtube:
+  fuente: metricool              # metricool | youtube_api
+  short_max_segundos: 60         # <= esto se considera short
+  channel_id: ""                 # solo si fuente == youtube_api
+
+# --- Meta Ads ---
+# Por defecto sale de Metricool (fuente: metricool). Ads Insights solo como fallback.
+meta_ads:
+  fuente: metricool              # metricool | ads_api
+  ad_account_id: ""              # solo si fuente == ads_api
+  metric_seguidores: "follows"   # solo si fuente == ads_api
+
+# --- Narrativa (único uso de IA) ---
+narrativa:
+  proveedor: "openai"            # tienen OpenAI
+  modelo: "gpt-4o-mini"
+  max_tokens: 900
+
+# --- Notificaciones al terminar (opcional) ---
+notificar:
+  email: ""                      # dejar vacío para no enviar
+  slack_webhook: ""
+
+# ---------------------------------------------------------------
+# .env (NO commitear) — variables de entorno esperadas (plan SIN API de Metricool):
+#   MONDAY_TOKEN                  (Monday, para la lista de propiedad)
+#   GOOGLE_SERVICE_ACCOUNT_JSON   (ruta al json de la service account; lee/escribe Sheets)
+#   ANTHROPIC_API_KEY  o  OPENAI_API_KEY   (narrativa)
+#   (No hacen falta tokens de Metricool: no se usa su API.)
+# ---------------------------------------------------------------

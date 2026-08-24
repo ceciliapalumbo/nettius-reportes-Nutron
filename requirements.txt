@@ -1,0 +1,11 @@
+requests>=2.31
+pandas>=2.0
+PyYAML>=6.0
+python-dotenv>=1.0
+google-api-python-client>=2.100      # YouTube Data API v3
+gspread>=6.0                         # escribir a Google Sheets
+google-auth>=2.30
+anthropic>=0.40                      # narrativa (si proveedor=anthropic)
+openai>=1.40                         # narrativa (si proveedor=openai)
+pytest>=8.0
+jsonschema>=4.22
